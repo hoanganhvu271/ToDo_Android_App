@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Firstapp" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="Theme.Firstapp" parent="Base.Theme.Firstapp" />
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Other theme attributes -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+</resources>
