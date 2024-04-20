@@ -1,5 +1,6 @@
 package com.hav.firstapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,19 +13,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hav.firstapp.Adapter.ToDoAdapter;
 import com.hav.firstapp.Model.ToDoModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import com.hav.firstapp.Utils.DatabaseHandler;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogCloseListener{
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
     private RecyclerView taskRecyclerView;
     private ToDoAdapter taskAdapter;
     private List<ToDoModel> taskList;
+    private DatabaseHandler db;
+
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +48,34 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        
+
+        db = new DatabaseHandler(this);
+        db.openDatabase();
+
         taskRecyclerView = findViewById(R.id.taskRecyclerView);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        taskAdapter = new ToDoAdapter(this);
+        taskAdapter = new ToDoAdapter(db, this);
         taskRecyclerView.setAdapter(taskAdapter);
 
-        ToDoModel task = new ToDoModel();
-        task.setTask("This is a test task");
-        task.setStatus(0);
-        task.setId(1);
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+            }
+        });
 
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
+
+        taskList = db.getAllTasks();
+        Collections.reverse(taskList);
 
         taskAdapter.setTasks(taskList);
+    }
+
+    public void handleDialogClose(DialogInterface dialog){
+        taskList = db.getAllTasks();
+        taskAdapter.setTasks(taskList);
+        taskAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -1,23 +1,30 @@
 package com.hav.firstapp.Adapter;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.hav.firstapp.AddNewTask;
 import com.hav.firstapp.Model.ToDoModel;
 import java.util.List;
 import com.hav.firstapp.MainActivity;
 import com.hav.firstapp.R;
 import android.widget.CheckBox;
 import com.hav.firstapp.Model.ToDoModel;
+import com.hav.firstapp.Utils.DatabaseHandler;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
     private List<ToDoModel> todoList;
     private MainActivity activity;
+    private DatabaseHandler db;
 
-    public ToDoAdapter(MainActivity activity){
+    public ToDoAdapter(DatabaseHandler db, MainActivity activity)
+    {
         this.activity = activity;
+        this.db = db;
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
@@ -30,6 +37,14 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
         ToDoModel item = todoList.get(position);
         holder.task.setText(item.getTask());
         holder.task.setChecked(toBoolean(item.getStatus()));
+        holder.task.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                db.updateStatus(item.getId(), 1);
+            }else{
+                db.updateStatus(item.getId(), 0);
+            }
+        });
+
     }
 
     private boolean toBoolean(int n){
@@ -39,6 +54,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
         this.todoList = todoList;
         notifyDataSetChanged();
     }
+
+    public void EditItem(int position){
+        ToDoModel item = todoList.get(position);
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("id", item.getId());
+        bundle.putString("task", item.getTask());
+        AddNewTask fragment = new AddNewTask();
+        fragment.setArguments(bundle);
+        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+    }
+
     public int getItemCount(){
         return todoList.size();
     }
