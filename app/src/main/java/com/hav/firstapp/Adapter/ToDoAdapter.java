@@ -1,4 +1,5 @@
 package com.hav.firstapp.Adapter;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
         notifyDataSetChanged();
     }
 
-    public void EditItem(int position){
+    public void editItem(int position){
         ToDoModel item = todoList.get(position);
         Bundle bundle = new Bundle();
 
@@ -66,8 +67,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
     }
 
+    public void deleteItem(int position){
+        ToDoModel item = todoList.get(position);
+        db.deleteTask(item.getId());
+        todoList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public int getItemCount(){
         return todoList.size();
+    }
+
+    public Activity getContext(){
+        return this.activity;
     }
     public static class ViewHolder extends RecyclerView.ViewHolder{
         CheckBox task;

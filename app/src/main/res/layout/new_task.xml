@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:theme="@style/Base.Theme.Firstapp">
-    
-    <EditText
-        android:id="@+id/newTaskText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:hint="New Task">
-    </EditText>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <Button
-        android:id="@+id/newTaskButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/newTaskText"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:text="Save"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        android:background="@color/colorPrimary">
-    </Button>
+    app:cardElevation="16dp"
+    app:cardCornerRadius="16dp">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+    android:background="@color/transparent"
+
+android:theme="@style/Base.Theme.Firstapp">
+
+<EditText
+    android:id="@+id/newTaskText"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_marginStart="8dp"
+    android:background="@color/transparent"
+    android:hint="New Task">
+</EditText>
+
+<Button
+    android:id="@+id/newTaskButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/newTaskText"
+    android:layout_alignParentEnd="true"
+    android:layout_marginBottom="16dp"
+    android:layout_marginEnd="16dp"
+    android:text="Save"
+    android:textAllCaps="false"
+    android:textSize="16sp"
+    android:background="@color/colorPrimary">
+</Button>
 
 </RelativeLayout>
+</androidx.cardview.widget.CardView>

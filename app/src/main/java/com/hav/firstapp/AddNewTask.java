@@ -3,10 +3,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.hav.firstapp.Utils.DatabaseHandler;
 import com.hav.firstapp.Model.ToDoModel;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +20,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+
 import android.app.Activity;
 
-public class AddNewTask extends BottomSheetDialogFragment{
+import java.util.Objects;
+
+public class AddNewTask extends DialogFragment {
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private Button newTaskSaveButton;
@@ -35,9 +42,20 @@ public class AddNewTask extends BottomSheetDialogFragment{
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            Log.d("Layout Params", "WRAP_CONTENT: " + ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceSate){
-        View view = layoutInflater.inflate(R.layout.new_task, container, false);
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        View view = layoutInflater.inflate(R.layout.new_task, container, true);
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//        view.setBackgroundColor(Color.TRANSPARENT);
         return view;
     }
 
@@ -48,6 +66,9 @@ public class AddNewTask extends BottomSheetDialogFragment{
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
         db = new DatabaseHandler(getActivity());
         db.openDatabase();
+
+        newTaskSaveButton.setEnabled(false);
+        newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDisable));
 
         boolean isUpdate = false;
         final Bundle bundle = getArguments();
@@ -102,6 +123,9 @@ public class AddNewTask extends BottomSheetDialogFragment{
         });
 
     }
+
+
+
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {

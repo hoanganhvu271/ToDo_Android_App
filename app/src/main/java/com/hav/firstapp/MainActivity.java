@@ -4,13 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -32,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private ToDoAdapter taskAdapter;
     private List<ToDoModel> taskList;
     private DatabaseHandler db;
-
     private FloatingActionButton fab;
 
     @Override
@@ -57,24 +59,47 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         taskAdapter = new ToDoAdapter(db, this);
         taskRecyclerView.setAdapter(taskAdapter);
 
+
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new RecyclerItemTouchHelper(taskAdapter));
+        itemTouchHelper.attachToRecyclerView(taskRecyclerView);
+
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+
             }
         });
 
-
         taskList = db.getAllTasks();
-        Collections.reverse(taskList);
 
-        taskAdapter.setTasks(taskList);
+        ViewGroup emptyLayout = findViewById(R.id.empty_layout);
+
+        if (taskList.isEmpty()) {
+            emptyLayout.setVisibility(View.VISIBLE);
+            taskRecyclerView.setVisibility(View.GONE);
+        } else {
+            Collections.reverse(taskList);
+            taskAdapter.setTasks(taskList);
+            emptyLayout.setVisibility(View.GONE);
+            taskRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void handleDialogClose(DialogInterface dialog){
         taskList = db.getAllTasks();
-        taskAdapter.setTasks(taskList);
+        ViewGroup emptyLayout = findViewById(R.id.empty_layout);
+        if (taskList.isEmpty()) {
+            emptyLayout.setVisibility(View.VISIBLE);
+            taskRecyclerView.setVisibility(View.GONE);
+        } else {
+            Collections.reverse(taskList);
+            taskAdapter.setTasks(taskList);
+            emptyLayout.setVisibility(View.GONE);
+            taskRecyclerView.setVisibility(View.VISIBLE);
+        }
         taskAdapter.notifyDataSetChanged();
     }
 
